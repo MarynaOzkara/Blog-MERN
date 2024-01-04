@@ -55,3 +55,49 @@ export const create = async (req, res) => {
     });
   }
 };
+
+export const remove = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const result = await PostModel.findOneAndDelete(postId);
+    if (!result) {
+      return res.status(404).json({
+        message: "Статья не найдена",
+      });
+    }
+    res.json({ message: "Статья удалена" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Не удалось создать статью",
+    });
+  }
+};
+
+export const update = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const body = req.body;
+    const updatePost = await PostModel.findOneAndUpdate(postId, body, {
+      new: true,
+    });
+    if (!updatePost) {
+      return res.status(404).json({
+        message: "Статья не найдена",
+      });
+    }
+    res.json(updatePost);
+  } catch (error) {
+    res.status(500).json({
+      message: "Не удалось получить статьи",
+    });
+  }
+};
+export const uploadImage = (req, res) => {
+  try {
+    // console.log(req.file);
+    res.json({
+      url: `/uploads/${req.file.originalname}`,
+    });
+  } catch (error) {}
+};

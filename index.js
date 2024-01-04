@@ -5,9 +5,10 @@ import {
   loginValidation,
 } from "./validations/authValidation.js";
 import checkAuth from "./utils/checkAuth.js";
-import { getMe, login, register } from "./controllers/auth.js";
-import { create, getAll, getOne } from "./controllers/post.js";
+import { AuthController, PostController } from "./controllers/index.js";
 import { postCreateValidation } from "./validations/postValidation.js";
+import { upload } from "./utils/uplosd.js";
+import hendleValidationErrors from "./utils/hendleValidationErrors.js";
 
 mongoose
   .connect(
@@ -18,16 +19,41 @@ mongoose
 
 const app = express();
 app.use(express.json());
+app.use("/uploads", express.static("ulloads"));
 
-app.post("/auth/register", registerValidation, register);
-app.post("/auth/login", loginValidation, login);
-app.get("/auth/me", checkAuth, getMe);
+app.post(
+  "/auth/register",
+  registerValidation,
+  hendleValidationErrors,
+  AuthController.register
+);
+app.post(
+  "/auth/login",
+  loginValidation,
+  hendleValidationErrors,
+  AuthController.login
+);
+app.get("/auth/me", checkAuth, AuthController.getMe);
 
-app.get("/posts", getAll);
-app.get("/posts/:id", getOne);
-app.post("/posts", checkAuth, postCreateValidation, create);
-// app.delete("/posts/:id");
-// app.patch("/posts");
+app.post("/upload", checkAuth, upload.single("image"), uploadImage);
+
+app.get("/posts", PostController.getAll);
+app.post(
+  "/posts",
+  checkAuth,
+  postCreateValidation,
+  hendleValidationErrors,
+  PostController.create
+);
+app.get("/posts/:id", PostController.getOne);
+app.delete("/posts/:id", checkAuth, PostController.remove);
+app.patch(
+  "/posts/:id",
+  checkAuth,
+  postCreateValidation,
+  hendleValidationErrors,
+  PostController.update
+);
 
 app.listen(4444, (err) => {
   if (err) {
