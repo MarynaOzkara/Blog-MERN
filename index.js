@@ -35,7 +35,12 @@ app.post(
 );
 app.get("/auth/me", checkAuth, AuthController.getMe);
 
-app.post("/upload", checkAuth, upload.single("image"), uploadImage);
+app.post(
+  "/upload",
+  checkAuth,
+  upload.single("image"),
+  PostController.uploadImage
+);
 
 app.get("/posts", PostController.getAll);
 app.post(
