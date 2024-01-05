@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 import {
   registerValidation,
   loginValidation,
@@ -11,14 +12,13 @@ import { upload } from "./utils/uplosd.js";
 import hendleValidationErrors from "./utils/hendleValidationErrors.js";
 
 mongoose
-  .connect(
-    "mongodb+srv://ozkaramaryna:8wbTGRU9P8JK6ZMQ@phonebook.d5kvzde.mongodb.net/db-blog"
-  )
+  .connect(process.env.MONGODB_URL)
   .then(() => console.log("DB OK"))
   .catch((err) => console.log("DB ERR", err));
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 app.use("/uploads", express.static("ulloads"));
 
 app.post(
@@ -43,6 +43,7 @@ app.post(
 );
 
 app.get("/posts", PostController.getAll);
+app.get("/tags", PostController.getLastTags);
 app.post(
   "/posts",
   checkAuth,
