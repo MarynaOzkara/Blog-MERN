@@ -12,7 +12,9 @@ import { upload } from "./utils/uplosd.js";
 import hendleValidationErrors from "./utils/hendleValidationErrors.js";
 
 mongoose
-  .connect(process.env.MONGODB_URL)
+  .connect(
+    "mongodb+srv://ozkaramaryna:8wbTGRU9P8JK6ZMQ@phonebook.d5kvzde.mongodb.net/db-blog"
+  )
   .then(() => console.log("DB OK"))
   .catch((err) => console.log("DB ERR", err));
 
